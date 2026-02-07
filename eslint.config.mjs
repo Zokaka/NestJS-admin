@@ -19,7 +19,10 @@ export default tseslint.config(
       },
       sourceType: 'commonjs',
       parserOptions: {
-        projectService: true,
+        // projectService: true = ESLint 自动猜 tsconfig；在 PassportStrategy 这种 mixin + 泛型 情况下，猜不准；于是 Strategy 被当成 unknown / any
+        // projectService: true,
+        // 为了解决 jwt.strategy.ts的问题，
+        project: ['./tsconfig.eslint.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },
