@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DataModule } from './modules/data/data.module';
 import { CatsController } from './cats/cats.controller';
-/* 环境配置 */
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { BookModule } from './modules/book/book.module';
+// 支持根据 NODE_ENV 自动加载对应文件
 import { ConfigModule } from '@nestjs/config';
-// 服务器端数据库连接配置
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 
+
+/* 所有业务逻辑放到service */
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,13 +27,13 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], // 自动加载实体
-      synchronize: true, // 开发时自动同步表结构（生产关闭，避免数据丢失）
+      autoLoadEntities: true
     }),
-    UsersModule,
+    DataModule,
+    UserModule,
     AuthModule,
-  ],
+    BookModule],
   controllers: [AppController, CatsController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

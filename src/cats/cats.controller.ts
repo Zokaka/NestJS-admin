@@ -1,41 +1,17 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { CreateCatDto, ListAllEntities, UpdateCatDto } from './cat.dto';
+import { Controller, Get, HttpException, HttpStatus, Param, UseFilters } from '@nestjs/common';
+import { HttpExceptionFilter } from 'src/exception/http-exception.filter';
 
 @Controller('cats')
 export class CatsController {
-  @Post()
-  create(@Body() createCatDto: CreateCatDto) {
-    console.log(createCatDto);
-    return 'This action adds a new cat';
-  }
 
-  @Get()
-  findAll(@Query() query: ListAllEntities) {
-    return `This action returns all cats (limit: ${query.limit} items)`;
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return `This action returns a #${id} cat`;
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
-    console.log(updateCatDto);
-    return `This action updates a #${id} cat`;
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `This action removes a #${id} cat`;
+  /* 通过UseFilters装饰符绑定自定义异常过滤器 */
+  @Get('/:id')
+  @UseFilters(new HttpExceptionFilter)
+  getCat(@Param() params) {
+    const id = Number(params.id)
+    if (!params.id || isNaN(id) || !Number.isInteger(id)) {
+      throw new HttpException('必须包含id参数，并且id为数字', HttpStatus.BAD_REQUEST)
+    }
+    return `get cat and id is ${params.id}`
   }
 }
