@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 全局 ValidationPipe（用于做字段校验）（强烈推荐全局开启）
+  // 全局 ValidationPipe（强烈推荐全局开启）
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,                // 剔除 DTO 未定义的字段
